@@ -1,5 +1,6 @@
 package com.packrboy.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -211,22 +213,34 @@ public class LoginActivity extends AppCompatActivity {
                 .setCallback(new FutureCallback<com.koushikdutta.ion.Response<JsonObject>>() {
                     @Override
                     public void onCompleted(Exception e, com.koushikdutta.ion.Response<JsonObject> result) {
-                        xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
+                        if (e != null){
+                            hideKeyboard();
+                            Snackbar.make(loginLayout, "Something is wrong with the internet. Sorry for the interruption", Snackbar.LENGTH_LONG).show();
+                        }
+                        else  {
+                           xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
 //
-                        xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
-                        size = xxx.size();
-                        splitCookie = xxx.get(size - 1).split(";");
-                        splitSessionId = splitCookie[0].split("=");
+                           xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
+                           if (xxx.size() != 0) {
+                               size = xxx.size();
+                               splitCookie = xxx.get(size - 1).split(";");
+                               splitSessionId = splitCookie[0].split("=");
 
-                        preferenceClass.saveCookie("laravel_session=" + splitSessionId[1]);
+                               preferenceClass.saveCookie("laravel_session=" + splitSessionId[1]);
 
-                        Log.e("error",result.getResult().toString());
-                        parseJsonData(result.getResult());
+                           }
+                           Log.e("error", result.getResult().toString());
+                           parseJsonData(result.getResult());
+                       }
+
+
+
 
                     }
 
 
                 });
+
     }
 
     public static String getLoginRequestUrl() {
@@ -246,12 +260,24 @@ public class LoginActivity extends AppCompatActivity {
 
             } else {
                 Log.e("error2","Invalid credentials");
+                hideKeyboard();
                 Snackbar.make(loginLayout, "Sorry you do not have an account with us. Go ahead create one and make life easy :)", Snackbar.LENGTH_LONG).show();
             }
         }
 
 
     }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+
 
 
     public void sendTestJsonRequest() {

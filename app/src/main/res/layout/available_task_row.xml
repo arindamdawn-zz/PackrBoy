@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardUseCompatPadding="true"
+        android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/requestType"
+            android:layout_below="@+id/itemInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="PICKUP"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"
+            android:background="@color/textColorPrimary"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/acceptRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACCEPT"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"
+            android:background="@color/primaryColor"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="4dp"
+            android:textStyle="bold"
+            android:paddingBottom="4dp"
+            android:layout_below="@+id/itemInfo"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+    <LinearLayout
+        android:id="@+id/itemInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/itemImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/abc_btn_check_to_on_mtrl_000"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Item type - "
+                    android:fontFamily="sans-serif-light"/>
+
+                <TextView
+                    android:id="@+id/itemType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="parcel"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Item quantity - "
+                    android:fontFamily="sans-serif-light"/>
+
+                <TextView
+                    android:id="@+id/itemQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="12"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"/>
+
+            </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Customer name - "
+                    android:fontFamily="sans-serif-light"/>
+
+                <TextView
+                    android:id="@+id/customerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Arindam Dawn"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Address - "
+                    android:fontFamily="sans-serif-light"/>
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="7/23, Poddar Nagar, Kolkata - 700068, West Bengal"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>

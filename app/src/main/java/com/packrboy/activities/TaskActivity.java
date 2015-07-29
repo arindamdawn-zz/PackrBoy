@@ -10,11 +10,11 @@ import android.view.MenuItem;
 
 import com.packrboy.R;
 import com.packrboy.adapters.ViewPagerAdapter;
+import com.packrboy.fragments.AvailableTaskFragment;
 import com.packrboy.fragments.CompletedTaskFragment;
 import com.packrboy.fragments.PendingTaskFragment;
 
 public class TaskActivity extends AppCompatActivity {
-    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +32,10 @@ public class TaskActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new AvailableTaskFragment(),"Available Tasks");
         adapter.addFrag(new PendingTaskFragment(), "Pending Tasks");
         adapter.addFrag(new CompletedTaskFragment(), "Completed Tasks");
+
         viewPager.setAdapter(adapter);
     }
 

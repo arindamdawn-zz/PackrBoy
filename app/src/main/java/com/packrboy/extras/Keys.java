@@ -39,4 +39,18 @@ public interface Keys {
         public static String KEY_PHONE_NO_VERIFIED = "phone_no_verified";
 
     }
+
+    public interface Shipment{
+        public static String KEY_TYPE = "type";
+        public static String KEY_PICKUP_STREET_NO = "pickup_street_number";
+        public static String KEY_SHIPMENT = "shipment";
+        public static String KEY_ID = "id";
+        public static String KEY_PICKUP_ROUTE = "pickup_route";
+        public static String KEY_PICKUP_CITY = "pickup_locality";
+        public static String KEY_PICKUP_STATE = "pickup_city";
+        public static String KEY_PICKUP_LATITUDE = "pickup_latitude";
+        public static String KEY_PICKUP_LONGITUDE = "pickup_longitude";
+        public static String KEY_PICKUP_POSTAL_CODE = "pickup_postal_code";
+        public static String KEY_ITEM_QUANTITY = "item_qty";
+    }
 }
