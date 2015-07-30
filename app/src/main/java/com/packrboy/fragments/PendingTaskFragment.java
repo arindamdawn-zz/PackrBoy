@@ -2,6 +2,7 @@ package com.packrboy.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -75,6 +76,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
     String transitStatus,userId,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
     private RelativeLayout noAvailableTasks;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public PendingTaskFragment() {
 
@@ -83,6 +85,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.pending_task_fragment, container, false);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout)layout.findViewById(R.id.activity_main_swipe_refresh_layout);
         preferenceClass = new SharedPreferenceClass(getActivity());
         userId = preferenceClass.getCustomerId();
         noAvailableTasks = (RelativeLayout)layout.findViewById(R.id.no_available_tasks);
@@ -92,6 +95,12 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
         mRecyclerView.setAdapter(mTaskAdapter);
         mTaskAdapter.setClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sendJsonRequest();
+            }
+        });
 
 
         return layout;
@@ -114,6 +123,9 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getRequestUrl(), pendingTaskObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
                 Log.i("error", jsonObject.toString());
                 Log.i("login", pendingTaskObject.toString());
                 shipmentArrayList = parseJsonResponse(jsonObject);

@@ -2,6 +2,7 @@ package com.packrboy.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -76,6 +77,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     String userId,transitStatus,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
     RelativeLayout progressWheel,noAvailableTasks;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public AvailableTaskFragment() {
 
@@ -84,6 +86,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.available_task_fragment, container, false);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout)layout.findViewById(R.id.activity_main_swipe_refresh_layout);
         preferenceClass = new SharedPreferenceClass(getActivity());
         userId = preferenceClass.getCustomerId();
         progressWheel = (RelativeLayout)layout.findViewById(R.id.progress_wheel);
@@ -94,6 +97,12 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         mRecyclerView.setAdapter(mTaskAdapter);
         mTaskAdapter.setClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sendJsonRequest();
+            }
+        });
 
 
         return layout;
@@ -117,6 +126,9 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getRequestUrl(), testObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
                 progressWheel.setVisibility(View.GONE);
                 Log.i("error", jsonObject.toString());
                 Log.i("login", testObject.toString());
