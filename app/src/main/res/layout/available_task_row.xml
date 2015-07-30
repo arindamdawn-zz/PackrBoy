@@ -54,8 +54,8 @@
 
         <ImageView
             android:id="@+id/itemImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/abc_btn_check_to_on_mtrl_000"
             android:scaleType="centerCrop"/>
 
@@ -85,7 +85,6 @@
                     android:layout_height="wrap_content"
                     tools:text="parcel"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"/>
 
@@ -108,7 +107,6 @@
                     android:layout_height="wrap_content"
                     tools:text="12"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"/>
 
@@ -126,8 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Arindam Dawn"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true" />
 
 
                 <TextView
@@ -142,8 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="7/23, Poddar Nagar, Kolkata - 700068, West Bengal"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true" />
 
         </LinearLayout>
 

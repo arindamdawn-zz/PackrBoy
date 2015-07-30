@@ -28,7 +28,9 @@ public interface Keys {
         public static String KEY_REDIRECT_URL = "redirectUrl";
         public static String KEY_ERROR_MESSAGE = "error_msg";
         public static String KEY_LOGGED_IN_USER = "loggedinUser";
+        public static String KEY_USER_TYPE_OBJECT = "user_type_object";
         public static String KEY_FIRST_NAME = "fname";
+        public static String KEY_ID = "id";
         public static String KEY_LAST_NAME = "lname";
         public static String KEY_GENDER = "sex";
         public static String KEY_PROFILE_PIC = "profile_pic";
@@ -37,13 +39,15 @@ public interface Keys {
         public static String KEY_USER_TYPE = "user_type";
         public static String KEY_EMAIL_VERIFIED = "email_verified";
         public static String KEY_PHONE_NO_VERIFIED = "phone_no_verified";
-
+        public static String KEY_ERROR_CODE = "error_code";
     }
 
     public interface Shipment{
         public static String KEY_TYPE = "type";
         public static String KEY_PICKUP_STREET_NO = "pickup_street_number";
+        public static String KEY_SHIPMENT_ARRAY = "shipments";
         public static String KEY_SHIPMENT = "shipment";
+        public static String KEY_ITEM_IMAGE = "item_image";
         public static String KEY_ID = "id";
         public static String KEY_PICKUP_ROUTE = "pickup_route";
         public static String KEY_PICKUP_CITY = "pickup_locality";
@@ -52,5 +56,6 @@ public interface Keys {
         public static String KEY_PICKUP_LONGITUDE = "pickup_longitude";
         public static String KEY_PICKUP_POSTAL_CODE = "pickup_postal_code";
         public static String KEY_ITEM_QUANTITY = "item_qty";
+        public static String KEY_CREATED_AT = "created_at";
     }
 }

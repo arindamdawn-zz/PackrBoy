@@ -71,4 +71,6 @@
     <string name="share">Share</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_task">Task Activity</string>
+    <string name="pickup_request_accepted">Pickup request has been assigned to you. You can now find it in your pending tasks.</string>
+    <string name="pickup_request_not_allowed">You are not allowed to accept this request.</string>
 </resources>

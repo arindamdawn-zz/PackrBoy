@@ -4,13 +4,13 @@ package com.packrboy.classes;
  * Created by arindam.paaltao on 29-Jul-15.
  */
 public class Shipment {
-    long itemId;
+    int itemId;
 
-    public long getItemId() {
+    public int getItemId() {
         return itemId;
     }
 
-    public void setItemId(long itemId) {
+    public void setItemId(int itemId) {
         this.itemId = itemId;
     }
 
@@ -38,11 +38,11 @@ public class Shipment {
         this.itemTypeId = itemTypeId;
     }
 
-    public int getItemQuantity() {
+    public String getItemQuantity() {
         return itemQuantity;
     }
 
-    public void setItemQuantity(int itemQuantity) {
+    public void setItemQuantity(String itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
 
@@ -150,8 +150,8 @@ public class Shipment {
         this.itemPrice = itemPrice;
     }
 
-    int deliveryType,itemTypeId,itemQuantity;
-    String itemType;
+    int deliveryType,itemTypeId;
+    String itemType,itemQuantity;
     String requestType;
 
     public String getRequestType() {

@@ -37,25 +37,28 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.packrboy.R;
 import com.packrboy.classes.SharedPreferenceClass;
-import com.packrboy.extras.Keys;
 import com.packrboy.network.VolleySingleton;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_FIRST_NAME;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_GENDER;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_ID;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_LAST_NAME;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_LOGGED_IN_USER;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_LOGIN_STATUS;
-import static com.packrboy.extras.urlEndPoints.KEY_BASE_URL;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE_OBJECT;
 import static com.packrboy.extras.urlEndPoints.KEY_LOGIN;
 import static com.packrboy.extras.urlEndPoints.KEY_TEST_URL;
-import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL;
-import static com.packrboy.extras.Keys.ServiceKeys.KEY_EMAIL;
+import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL_API;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -68,7 +71,9 @@ public class LoginActivity extends AppCompatActivity {
     List<String> xxx;
     int size;
     String[] splitCookie, splitSessionId;
+    String userType,firstName,lastName,gender,imageURL,phoneNo,userId;
     SharedPreferenceClass preferenceClass;
+    RelativeLayout progressWheel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = (TextView) findViewById(R.id.forgotPassword);
         loginLayout = (RelativeLayout) findViewById(R.id.loginLayout);
         preferenceClass = new SharedPreferenceClass(getApplicationContext());
+        progressWheel = (RelativeLayout)findViewById(R.id.progress_wheel);
     }
 
     public void onClick() {
@@ -118,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validationCheck()) {
+                    Log.e("gfdfdgf","jhghfghfghfghfghf");
                     sendLoginJsonRequest();
                 }
             }
@@ -146,7 +153,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void sendTokenRequest() {
-
         RequestQueue requestQueue = VolleySingleton.getsInstance().getRequestQueue();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, getRequestUrl(), new Response.Listener<String>() {
             @Override
@@ -191,6 +197,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void sendLoginJsonRequest() {
+        progressWheel.setVisibility(View.VISIBLE);
         final JsonObject loginObject = new JsonObject();
         final JsonObject jsonObject1 = new JsonObject();
         final JsonObject tokenObject = new JsonObject();
@@ -213,11 +220,8 @@ public class LoginActivity extends AppCompatActivity {
                 .setCallback(new FutureCallback<com.koushikdutta.ion.Response<JsonObject>>() {
                     @Override
                     public void onCompleted(Exception e, com.koushikdutta.ion.Response<JsonObject> result) {
-                        if (e != null){
-                            hideKeyboard();
-                            Snackbar.make(loginLayout, "Something is wrong with the internet. Sorry for the interruption", Snackbar.LENGTH_LONG).show();
-                        }
-                        else  {
+                        progressWheel.setVisibility(View.GONE);
+                        if (result.getResult() != null){
                            xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
 //
                            xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
@@ -229,9 +233,19 @@ public class LoginActivity extends AppCompatActivity {
                                preferenceClass.saveCookie("laravel_session=" + splitSessionId[1]);
 
                            }
-                           Log.e("error", result.getResult().toString());
-                           parseJsonData(result.getResult());
+                            parseJsonData(result.getResult());
                        }
+                        else if (e != null){
+                            Log.e("Exception","There is an exception");
+                            hideKeyboard();
+                            Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            Log.e("Exception","There is a problem");
+                            hideKeyboard();
+                            Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
+                        }
 
 
 
@@ -244,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public static String getLoginRequestUrl() {
-        return KEY_UAT_BASE_URL + KEY_LOGIN;
+        return KEY_UAT_BASE_URL_API + KEY_LOGIN;
     }
 
 
@@ -252,9 +266,25 @@ public class LoginActivity extends AppCompatActivity {
         if (jsonObject == null) {
             return;
         }
+        if (jsonObject.has(KEY_LOGGED_IN_USER)){
+            JsonObject loggedInUserObject = jsonObject.getAsJsonObject(KEY_LOGGED_IN_USER);
+            firstName = loggedInUserObject.get(KEY_FIRST_NAME).getAsString();
+            lastName = loggedInUserObject.get(KEY_LAST_NAME).getAsString();
+            gender = loggedInUserObject.get(KEY_GENDER).getAsString();
+            userType = loggedInUserObject.get(KEY_USER_TYPE).getAsString();
+
+            if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)){
+                JsonObject userTypeObject = loggedInUserObject.getAsJsonObject(KEY_USER_TYPE_OBJECT);
+                userId = userTypeObject.get(KEY_ID).getAsString();
+
+            }
+
+
+        }
         if (jsonObject.has(KEY_LOGIN_STATUS)) {
-            if (jsonObject.get(KEY_LOGIN_STATUS).getAsBoolean()) {
+            if (jsonObject.get(KEY_LOGIN_STATUS).getAsBoolean() && userType.contentEquals("packrboy")) {
                 Intent intent = new Intent(LoginActivity.this, TaskActivity.class);
+                intent.putExtra("userId",userId);
                 startActivity(intent);
                 finish();
 
@@ -341,7 +371,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public static String getTestRequestUrl() {
-        return KEY_UAT_BASE_URL + KEY_TEST_URL;
+        return KEY_UAT_BASE_URL_API + KEY_TEST_URL;
     }
 
 

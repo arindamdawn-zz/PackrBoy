@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.koushikdutta.ion.Ion;
 import com.packrboy.R;
 import com.packrboy.classes.Shipment;
 import com.packrboy.network.VolleySingleton;
@@ -19,6 +20,8 @@ import com.packrboy.network.VolleySingleton;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL;
 
 /**
  * Created by arindam.paaltao on 29-Jul-15.
@@ -29,8 +32,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
     private Activity activity;
     private LayoutInflater inflater;
     private View view;
+    private ClickListener clickListener;
     private VolleySingleton singleton;
     private ImageLoader imageLoader;
+    private ImageView itemImage;
     private ArrayList<Shipment> shipmentArrayList = new ArrayList<>();
 
     public TaskAdapter(Context context,Activity activity) {
@@ -39,6 +44,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         imageLoader = singleton.getImageLoader();
         this.activity = activity;
     }
+
+    public void setClickListener(ClickListener clickListener){
+        this.clickListener = clickListener;
+
+    }
+
 
     @Override
     public TaskAdapter.ShipmentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,22 +66,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         holder.requestType.setText(current.getRequestType());
         holder.itemType.setText(current.getItemType());
         holder.itemQuantity.setText(current.getItemQuantity());
-        holder.requestAddress.setText(current.getStreetNo()+current.getRoute()+","+current.getCity()+"-"+current.getPostalCode()+","+current.getState());
+        holder.requestAddress.setText(current.getStreetNo()+","+current.getRoute()+","+current.getCity()+"-"+current.getPostalCode()+","+current.getState());
 
         String imageURL = current.getImageURL();
         if(imageURL != null){
-            imageLoader.get(imageURL, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    holder.itemImage.setImageBitmap(imageContainer.getBitmap());
-
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-
-                }
-            });
+            Ion.with(itemImage)
+                    .placeholder(R.drawable.ic_cast_dark)
+                    .error(R.drawable.ic_cast_disabled_light)
+                    .load(KEY_UAT_BASE_URL+imageURL);
         }
     }
 
@@ -85,9 +88,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         return shipmentArrayList.size();
     }
 
-    class ShipmentHolder extends RecyclerView.ViewHolder {
+    class ShipmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ImageView itemImage;
         TextView requestType,requestAddress,itemType,itemQuantity,customerName;
 
         public ShipmentHolder(View itemView) {
@@ -99,7 +101,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
             itemType = (TextView)itemView.findViewById(R.id.itemType);
             itemQuantity = (TextView)itemView.findViewById(R.id.itemQuantity);
             customerName = (TextView)itemView.findViewById(R.id.customerName);
+            itemView.setOnClickListener(this);
 
         }
+
+        @Override
+        public void onClick(View v) {
+            if(clickListener != null){
+                clickListener.itemClicked(v, getLayoutPosition());
+            }
+        }
+    }
+
+    public interface ClickListener{
+        void itemClicked(View view, int position);
+
     }
 }
