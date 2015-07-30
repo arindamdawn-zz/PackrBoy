@@ -42,6 +42,7 @@ import java.util.Map;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_ERROR_CODE;
 import static com.packrboy.extras.Keys.Shipment.KEY_CREATED_AT;
 import static com.packrboy.extras.Keys.Shipment.KEY_ID;
+import static com.packrboy.extras.Keys.Shipment.KEY_IN_TRANSIT_STATUS;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_IMAGE;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_QUANTITY;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_CITY;
@@ -71,7 +72,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
     private SharedPreferenceClass preferenceClass;
     private ArrayList<Shipment> shipmentArrayList = new ArrayList<>();
     int shipmentId;
-    String userId,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
+    String transitStatus,userId,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
     private RelativeLayout noAvailableTasks;
 
@@ -82,8 +83,8 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.pending_task_fragment, container, false);
 
-        userId = getActivity().getIntent().getExtras().getString("userId");
         preferenceClass = new SharedPreferenceClass(getActivity());
+        userId = preferenceClass.getCustomerId();
         noAvailableTasks = (RelativeLayout)layout.findViewById(R.id.no_available_tasks);
         sendJsonRequest();
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.pendingTaskRecyclerView);
@@ -181,6 +182,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
                         JSONObject shipmentObject = shipmentListArray.getJSONObject(i);
                         if (shipmentObject.has(KEY_TYPE)) {
                             requestType = shipmentObject.getString(KEY_TYPE);
+                            transitStatus = shipmentObject.getString(KEY_IN_TRANSIT_STATUS);
                         }
                         JSONObject shipmentDetails = new JSONObject();
                         shipmentDetails = shipmentObject.getJSONObject(KEY_SHIPMENT);
@@ -211,6 +213,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
                         current.setRequestType(requestType);
                         current.setItemQuantity(itemQuantity);
                         current.setItemId(shipmentId);
+                        current.setTransitStatus(transitStatus);
 
                         shipmentArrayList.add(current);
 

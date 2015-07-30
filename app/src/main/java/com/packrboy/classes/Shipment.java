@@ -154,6 +154,16 @@ public class Shipment {
     String itemType,itemQuantity;
     String requestType;
 
+    public String getTransitStatus() {
+        return transitStatus;
+    }
+
+    public void setTransitStatus(String transitStatus) {
+        this.transitStatus = transitStatus;
+    }
+
+    String transitStatus;
+
     public String getRequestType() {
         return requestType;
     }

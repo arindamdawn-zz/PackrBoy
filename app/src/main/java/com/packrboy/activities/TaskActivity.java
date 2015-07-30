@@ -10,18 +10,22 @@ import android.view.MenuItem;
 
 import com.packrboy.R;
 import com.packrboy.adapters.ViewPagerAdapter;
+import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.fragments.AvailableTaskFragment;
 import com.packrboy.fragments.CompletedTaskFragment;
 import com.packrboy.fragments.PendingTaskFragment;
 
 public class TaskActivity extends AppCompatActivity {
 
+    SharedPreferenceClass preferenceClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
-
+        initialize();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Hello"+ " "+ preferenceClass.getFirstName()+"!");
         setSupportActionBar(toolbar);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         setupViewPager(viewPager);
@@ -32,7 +36,7 @@ public class TaskActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new AvailableTaskFragment(),"Available Tasks");
+        adapter.addFrag(new AvailableTaskFragment(), "Available Tasks");
         adapter.addFrag(new PendingTaskFragment(), "Pending Tasks");
         adapter.addFrag(new CompletedTaskFragment(), "Completed Tasks");
 
@@ -58,5 +62,11 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
+    public void initialize(){
+        preferenceClass = new SharedPreferenceClass(getApplicationContext());
+    }
 
+    public void onClick(){
+
+    }
 }

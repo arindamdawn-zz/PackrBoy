@@ -16,6 +16,7 @@ public class urlEndPoints {
     public static String KEY_DONE = "done";
     public static String KEY_ASSIGN_PICKUP = "assign_pickup";
     public static String KEY_PICKED_UP = "pickedup";
+    public static String KEY_ASSIGN_DELIVERY = "assign_delivery";
 
 
 

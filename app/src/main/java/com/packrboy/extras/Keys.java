@@ -44,6 +44,7 @@ public interface Keys {
 
     public interface Shipment{
         public static String KEY_TYPE = "type";
+        public static String KEY_IN_TRANSIT_STATUS = "in_transit_status";
         public static String KEY_PICKUP_STREET_NO = "pickup_street_number";
         public static String KEY_SHIPMENT_ARRAY = "shipments";
         public static String KEY_SHIPMENT = "shipment";

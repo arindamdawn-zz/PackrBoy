@@ -1,6 +1,7 @@
 package com.packrboy.activities;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,9 +10,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.packrboy.R;
+import com.packrboy.classes.SharedPreferenceClass;
 
 public class LauncherActivity extends AppCompatActivity {
-    Button skipToLogin;
+
+    private static int SPLASH_TIME_OUT = 3000 ;
+    private SharedPreferenceClass preferenceClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,32 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
         initialize();
         onClick();
+
+        new Handler().postDelayed(new Runnable() {
+
+            /*
+             * Showing splash screen with a timer. This will be useful when you
+             * want to show case your app logo / company
+             */
+
+            @Override
+            public void run() {
+                // This method will be executed once the timer is over
+                // Start your app main activity
+                if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0){
+                Intent i = new Intent(LauncherActivity.this, TaskActivity.class);
+                startActivity(i);}
+
+                else {
+                    Intent i = new Intent(LauncherActivity.this, LoginActivity.class);
+                    startActivity(i);
+                }
+
+                // close this activity
+                finish();
+            }
+        }, SPLASH_TIME_OUT);
+
     }
 
     @Override
@@ -42,17 +72,10 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     public void initialize(){
-        skipToLogin = (Button)findViewById(R.id.skipLogin);
+        preferenceClass = new SharedPreferenceClass(getApplicationContext());
     }
 
     public void onClick(){
-        skipToLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LauncherActivity.this,LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
     }
 }

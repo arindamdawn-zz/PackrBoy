@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.packrboy.extras.Keys.Shipment.KEY_CREATED_AT;
+import static com.packrboy.extras.Keys.Shipment.KEY_IN_TRANSIT_STATUS;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_IMAGE;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_QUANTITY;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_CITY;
@@ -67,7 +68,7 @@ public class CompletedTaskFragment extends Fragment {
     private ArrayList<Shipment> shipmentArrayList = new ArrayList<>();
     private RelativeLayout noTasksAvailable;
     Long id;
-    String requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
+    String transitStatus,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
 
     public CompletedTaskFragment() {
@@ -173,6 +174,7 @@ public class CompletedTaskFragment extends Fragment {
                         JSONObject shipmentObject = shipmentListArray.getJSONObject(i);
                         if (shipmentObject.has(KEY_TYPE)) {
                             requestType = shipmentObject.getString(KEY_TYPE);
+                            transitStatus = shipmentObject.getString(KEY_IN_TRANSIT_STATUS);
                         }
                         JSONObject shipmentDetails = new JSONObject();
                         shipmentDetails = shipmentObject.getJSONObject(KEY_SHIPMENT);
@@ -207,6 +209,7 @@ public class CompletedTaskFragment extends Fragment {
                         }
                         current.setRequestType(requestType);
                         current.setItemQuantity(itemQuantity);
+                        current.setTransitStatus(transitStatus);
 
                         shipmentArrayList.add(current);
 

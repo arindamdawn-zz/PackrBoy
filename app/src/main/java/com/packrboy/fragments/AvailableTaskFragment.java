@@ -42,6 +42,7 @@ import java.util.Map;
 
 import static com.packrboy.extras.Keys.Shipment.KEY_CREATED_AT;
 import static com.packrboy.extras.Keys.Shipment.KEY_ID;
+import static com.packrboy.extras.Keys.Shipment.KEY_IN_TRANSIT_STATUS;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_IMAGE;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_QUANTITY;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_CITY;
@@ -52,6 +53,7 @@ import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_ROUTE;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_STATE;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_STREET_NO;
 import static com.packrboy.extras.Keys.Shipment.KEY_SHIPMENT_ARRAY;
+import static com.packrboy.extras.urlEndPoints.KEY_ASSIGN_DELIVERY;
 import static com.packrboy.extras.urlEndPoints.KEY_ASSIGN_PICKUP;
 import static com.packrboy.extras.urlEndPoints.KEY_AVAILABLE;
 import static com.packrboy.extras.urlEndPoints.KEY_SHIPMENT_URL;
@@ -71,7 +73,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     private SharedPreferenceClass preferenceClass;
     private ArrayList<Shipment> shipmentArrayList = new ArrayList<>();
     int shipmentId;
-    String userId,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
+    String userId,transitStatus,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
     RelativeLayout progressWheel,noAvailableTasks;
 
@@ -83,7 +85,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         layout = inflater.inflate(R.layout.available_task_fragment, container, false);
 
         preferenceClass = new SharedPreferenceClass(getActivity());
-        userId = getActivity().getIntent().getExtras().getString("userId");
+        userId = preferenceClass.getCustomerId();
         progressWheel = (RelativeLayout)layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (RelativeLayout)layout.findViewById(R.id.no_available_tasks);
         sendJsonRequest();
@@ -183,6 +185,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
                         JSONObject shipmentObject = shipmentListArray.getJSONObject(i);
                         if (shipmentObject.has(KEY_TYPE)) {
                             requestType = shipmentObject.getString(KEY_TYPE);
+                            transitStatus = shipmentObject.getString(KEY_IN_TRANSIT_STATUS);
                         }
                         JSONObject shipmentDetails = new JSONObject();
                         shipmentDetails = shipmentObject.getJSONObject(KEY_SHIPMENT);
@@ -213,6 +216,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
                         current.setRequestType(requestType);
                         current.setItemQuantity(itemQuantity);
                         current.setItemId(shipmentId);
+                        current.setTransitStatus(transitStatus);
 
                         shipmentArrayList.add(current);
 
@@ -312,6 +316,96 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     }
 
 
+    public static String getAcceptDeliveryRequestRequestUrl(){
+        return KEY_UAT_BASE_URL_API + KEY_SHIPMENT_URL + KEY_ASSIGN_DELIVERY;
+    }
+
+    public void sendAcceptDeliveryRequestJsonRequest(){
+        final JSONObject shipmentObject = new JSONObject();
+        final JSONObject pendingTaskObject = new JSONObject();
+        try {
+            shipmentObject.put("packrboy_id", userId);
+            shipmentObject.put("shipment_id", shipmentId);
+            pendingTaskObject.put("payload", shipmentObject);
+            pendingTaskObject.put("token", preferenceClass.getAccessToken());
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestQueue requestQueue = VolleySingleton.getsInstance().getRequestQueue();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getAcceptDeliveryRequestRequestUrl(), pendingTaskObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Log.i("error", jsonObject.toString());
+                Log.i("login", pendingTaskObject.toString());
+                if (jsonObject.has(KEY_ERROR_CODE)){
+                    try {
+                        String errorCode = jsonObject.getString(KEY_ERROR_CODE);
+                        if (errorCode.contentEquals("200")){
+                            SimpleDialogFragment.createBuilder(getActivity(), getFragmentManager()).setTitle("Request Accepted").setMessage("Delivery request has been accepted").show();
+                        }
+                        else {
+                            SimpleDialogFragment.createBuilder(getActivity(), getFragmentManager()).setTitle("Request cannot be accepted").setMessage("The request cannot be accepted").show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+
+
+                } else if (volleyError instanceof AuthFailureError) {
+
+                    //TODO
+                } else if (volleyError instanceof ServerError) {
+
+                    //TODO
+                } else if (volleyError instanceof NetworkError) {
+
+                    //TODO
+                } else if (volleyError instanceof ParseError) {
+
+                    //TODO
+                }
+
+            }
+        }) {
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = super.getHeaders();
+
+                if (headers == null
+                        || headers.equals(Collections.emptyMap())) {
+                    headers = new HashMap<String, String>();
+                }
+
+                headers.put("Cookie", preferenceClass.getCookie());
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -323,6 +417,10 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         shipmentId = shipmentArrayList.get(position).getItemId();
         if (shipmentArrayList.get(position).getRequestType().contentEquals("pickup")){
         sendAcceptRequestJsonRequest();}
+
+        else{
+            sendAcceptDeliveryRequestJsonRequest();
+        }
 
 
 

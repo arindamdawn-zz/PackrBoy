@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_EMAIL;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_FIRST_NAME;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_GENDER;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_ID;
@@ -71,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     List<String> xxx;
     int size;
     String[] splitCookie, splitSessionId;
-    String userType,firstName,lastName,gender,imageURL,phoneNo,userId;
+    String userType,firstName,lastName,gender,imageURL,phoneNo,userId,userEmail;
     SharedPreferenceClass preferenceClass;
     RelativeLayout progressWheel;
 
@@ -87,6 +88,14 @@ public class LoginActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Sign in");
         setSupportActionBar(toolbar);
+
+        if (preferenceClass.getLastUserEmail() != null){
+
+            email.setText(preferenceClass.getLastUserEmail());
+            email.setFocusable(false);
+            email.setFocusableInTouchMode(true);
+
+        }
     }
 
     @Override
@@ -269,13 +278,18 @@ public class LoginActivity extends AppCompatActivity {
         if (jsonObject.has(KEY_LOGGED_IN_USER)){
             JsonObject loggedInUserObject = jsonObject.getAsJsonObject(KEY_LOGGED_IN_USER);
             firstName = loggedInUserObject.get(KEY_FIRST_NAME).getAsString();
+            preferenceClass.saveFirstName(firstName);
             lastName = loggedInUserObject.get(KEY_LAST_NAME).getAsString();
+            preferenceClass.saveLastName(lastName);
             gender = loggedInUserObject.get(KEY_GENDER).getAsString();
+            userEmail = loggedInUserObject.get(KEY_EMAIL).getAsString();
+            preferenceClass.saveLastUserEmail(userEmail);
             userType = loggedInUserObject.get(KEY_USER_TYPE).getAsString();
 
             if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)){
                 JsonObject userTypeObject = loggedInUserObject.getAsJsonObject(KEY_USER_TYPE_OBJECT);
                 userId = userTypeObject.get(KEY_ID).getAsString();
+                preferenceClass.saveCustomerId(userId);
 
             }
 
@@ -284,7 +298,6 @@ public class LoginActivity extends AppCompatActivity {
         if (jsonObject.has(KEY_LOGIN_STATUS)) {
             if (jsonObject.get(KEY_LOGIN_STATUS).getAsBoolean() && userType.contentEquals("packrboy")) {
                 Intent intent = new Intent(LoginActivity.this, TaskActivity.class);
-                intent.putExtra("userId",userId);
                 startActivity(intent);
                 finish();
 

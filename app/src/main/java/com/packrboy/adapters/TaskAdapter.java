@@ -67,6 +67,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         holder.itemType.setText(current.getItemType());
         holder.itemQuantity.setText(current.getItemQuantity());
         holder.requestAddress.setText(current.getStreetNo()+","+current.getRoute()+","+current.getCity()+"-"+current.getPostalCode()+","+current.getState());
+        holder.transitStatus.setText(current.getTransitStatus());
 
         String imageURL = current.getImageURL();
         if(imageURL != null){
@@ -90,7 +91,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
 
     class ShipmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView requestType,requestAddress,itemType,itemQuantity,customerName;
+        TextView requestType,requestAddress,itemType,itemQuantity,customerName,transitStatus;
 
         public ShipmentHolder(View itemView) {
             super(itemView);
@@ -101,6 +102,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
             itemType = (TextView)itemView.findViewById(R.id.itemType);
             itemQuantity = (TextView)itemView.findViewById(R.id.itemQuantity);
             customerName = (TextView)itemView.findViewById(R.id.customerName);
+            transitStatus = (TextView)itemView.findViewById(R.id.transitStatus);
             itemView.setOnClickListener(this);
 
         }

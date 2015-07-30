@@ -2,14 +2,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LauncherActivity">
+    tools:context=".LauncherActivity"
+    android:background="@color/splashBackground">
 
-<Button
-    android:id="@+id/skipLogin"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Skip to login"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:id="@+id/packMate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/app_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mate"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:fontFamily="sans-serif-light"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="delivery by superheroes!"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/packMate"
+        android:fontFamily="sans-serif-light"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

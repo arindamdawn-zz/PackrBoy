@@ -11,51 +11,22 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="220dp">
 
-        <TextView
-            android:id="@+id/requestType"
-            android:layout_below="@+id/itemInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="PICKUP"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:layout_margin="10dp"
-            android:background="@color/textColorPrimary"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"/>
 
-        <TextView
-            android:id="@+id/acceptRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ACCEPT"
-            android:textColor="@color/white"
-            android:layout_margin="10dp"
-            android:background="@color/primaryColor"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="4dp"
-            android:textStyle="bold"
-            android:paddingBottom="4dp"
-            android:layout_below="@+id/itemInfo"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+
 
     <LinearLayout
         android:id="@+id/itemInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/itemImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_margin="5dp"
             android:src="@drawable/abc_btn_check_to_on_mtrl_000"
             android:scaleType="centerCrop"/>
 
@@ -64,8 +35,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="10dp">
 
 
             <LinearLayout
@@ -127,23 +100,80 @@
                     android:textAllCaps="true" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Address - "
-                    android:fontFamily="sans-serif-light"/>
 
-                <TextView
-                    android:id="@+id/address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="7/23, Poddar Nagar, Kolkata - 700068, West Bengal"
-                    android:textAllCaps="true" />
 
         </LinearLayout>
 
+
     </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="10dp"
+            android:layout_below="@+id/itemInfo">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address - "
+            android:fontFamily="sans-serif-light"/>
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="7/23, Poddar Nagar, Kolkata - 700068, West Bengal"
+            android:textAllCaps="true" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/requestType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="PICKUP"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/primaryColor"
+            android:textColor="@color/white"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            android:background="@color/colorAccent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="Status : "
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/transitStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Out for pickup"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/white"/>
+        </RelativeLayout>
+
     </RelativeLayout>
 
 
