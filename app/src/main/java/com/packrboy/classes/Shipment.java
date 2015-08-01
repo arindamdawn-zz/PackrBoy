@@ -22,11 +22,11 @@ public class Shipment {
         this.postalCode = postalCode;
     }
 
-    public int getDeliveryType() {
+    public String getDeliveryType() {
         return deliveryType;
     }
 
-    public void setDeliveryType(int deliveryType) {
+    public void setDeliveryType(String deliveryType) {
         this.deliveryType = deliveryType;
     }
 
@@ -150,9 +150,9 @@ public class Shipment {
         this.itemPrice = itemPrice;
     }
 
-    int deliveryType,itemTypeId;
+    int itemTypeId;
     String itemType,itemQuantity;
-    String requestType;
+    String requestType,deliveryType;
 
     public String getTransitStatus() {
         return transitStatus;

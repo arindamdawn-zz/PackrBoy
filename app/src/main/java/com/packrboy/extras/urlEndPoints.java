@@ -7,6 +7,7 @@ public class urlEndPoints {
 
     public static String KEY_BASE_URL = "http://packr.in/api/";
     public static String KEY_UAT_BASE_URL_API = "http://192.168.1.11/packr/public/api/v1/";
+    public static String KEY_TOKEN = "csrf";
     public static String KEY_UAT_BASE_URL = "http://192.168.1.11/packr/public/";
     public static String KEY_TEST_URL = "test";
     public static String KEY_LOGIN = "login";
@@ -17,6 +18,7 @@ public class urlEndPoints {
     public static String KEY_ASSIGN_PICKUP = "assign_pickup";
     public static String KEY_PICKED_UP = "pickedup";
     public static String KEY_ASSIGN_DELIVERY = "assign_delivery";
+    public static String KEY_DELIVERED = "delivered";
 
 
 

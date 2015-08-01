@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -29,6 +30,7 @@ import com.packrboy.adapters.TaskAdapter;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.classes.Shipment;
 import com.packrboy.network.VolleySingleton;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,9 +42,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.packrboy.extras.Keys.Shipment.KEY_CREATED_AT;
+import static com.packrboy.extras.Keys.Shipment.KEY_DELIVERY_TYPE_ID;
+import static com.packrboy.extras.Keys.Shipment.KEY_ID;
 import static com.packrboy.extras.Keys.Shipment.KEY_IN_TRANSIT_STATUS;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_IMAGE;
 import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_QUANTITY;
+import static com.packrboy.extras.Keys.Shipment.KEY_ITEM_TYPE_ID;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_CITY;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_LATITUDE;
 import static com.packrboy.extras.Keys.Shipment.KEY_PICKUP_LONGITUDE;
@@ -67,10 +72,11 @@ public class CompletedTaskFragment extends Fragment {
     private TaskActivity activity;
     private SharedPreferenceClass preferenceClass;
     private ArrayList<Shipment> shipmentArrayList = new ArrayList<>();
-    private RelativeLayout noTasksAvailable;
-    Long id;
+    private ProgressWheel progressWheel;
+    private TextView noAvailableTasks;
+    int shipmentId,deliveryTypeId,itemTypeId;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    String transitStatus,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
+    String transitStatus,itemType,deliveryType,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
 
     public CompletedTaskFragment() {
@@ -82,7 +88,8 @@ public class CompletedTaskFragment extends Fragment {
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)layout.findViewById(R.id.activity_main_swipe_refresh_layout);
         preferenceClass = new SharedPreferenceClass(getActivity());
-        noTasksAvailable = (RelativeLayout)layout.findViewById(R.id.no_available_tasks);
+        progressWheel = (ProgressWheel)layout.findViewById(R.id.progress_wheel);
+        noAvailableTasks = (TextView)layout.findViewById(R.id.no_available_tasks);
         sendJsonRequest();
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.completedTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
@@ -103,6 +110,7 @@ public class CompletedTaskFragment extends Fragment {
     }
 
     public void sendJsonRequest(){
+        progressWheel.setVisibility(View.VISIBLE);
         final JSONObject testObject = new JSONObject();
         try {
             testObject.put("token", preferenceClass.getAccessToken());
@@ -118,6 +126,7 @@ public class CompletedTaskFragment extends Fragment {
                 if (mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
+                progressWheel.setVisibility(View.GONE);
                 Log.i("error", jsonObject.toString());
                 Log.i("login", testObject.toString());
                 shipmentArrayList = parseJsonResponse(jsonObject);
@@ -175,11 +184,11 @@ public class CompletedTaskFragment extends Fragment {
             try {
                 shipmentListArray  = response.getJSONArray(KEY_SHIPMENT_ARRAY);
                 if (shipmentListArray.length() == 0){
-                    if (noTasksAvailable.getVisibility() == View.GONE)
-                    noTasksAvailable.setVisibility(View.VISIBLE);
+                    if (noAvailableTasks.getVisibility() == View.GONE)
+                    noAvailableTasks.setVisibility(View.VISIBLE);
                 }else {
-                    if (noTasksAvailable.getVisibility() == View.VISIBLE)
-                        noTasksAvailable.setVisibility(View.GONE);
+                    if (noAvailableTasks.getVisibility() == View.VISIBLE)
+                        noAvailableTasks.setVisibility(View.GONE);
 
                     for (int i = 0; i < shipmentListArray.length(); i++) {
                         JSONObject shipmentObject = shipmentListArray.getJSONObject(i);
@@ -200,6 +209,24 @@ public class CompletedTaskFragment extends Fragment {
                         longitude = shipmentDetails.getString(KEY_PICKUP_LONGITUDE);
                         createdTime = shipmentDetails.getString(KEY_CREATED_AT);
                         itemQuantity = shipmentDetails.getString(KEY_ITEM_QUANTITY);
+                        shipmentId = Integer.parseInt(shipmentDetails.getString(KEY_ID));
+                        deliveryTypeId = Integer.parseInt(shipmentDetails.getString(KEY_DELIVERY_TYPE_ID));
+                        itemTypeId = Integer.parseInt(shipmentDetails.getString(KEY_ITEM_TYPE_ID));
+                        if (deliveryTypeId == 1) {
+                            deliveryType = "Local";
+                        } else if (deliveryTypeId == 2) {
+                            deliveryType = "National";
+                        } else if (deliveryTypeId == 3) {
+                            deliveryType = "International";
+                        }
+
+                        if (itemTypeId == 1){
+                            itemType = "Document";
+                        }else if (itemTypeId == 2){
+                            itemType = "Parcel";
+                        }else if (itemTypeId == 3){
+                            itemType = "Goods";
+                        }
 
 
                         Shipment current = new Shipment();
@@ -221,6 +248,9 @@ public class CompletedTaskFragment extends Fragment {
                         current.setRequestType(requestType);
                         current.setItemQuantity(itemQuantity);
                         current.setTransitStatus(transitStatus);
+                        current.setItemId(shipmentId);
+                        current.setDeliveryType(deliveryType);
+                        current.setItemType(itemType);
 
                         shipmentArrayList.add(current);
 

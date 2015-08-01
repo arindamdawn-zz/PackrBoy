@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/activity_main_swipe_refresh_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/availableTaskRecyclerView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
-    <RelativeLayout
-        android:id="@+id/progress_wheel"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:background="@color/transparentLoaderBackground">
-
-        <com.pnikosis.materialishprogress.ProgressWheel
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            wheel:matProg_barColor="@color/white"
-            wheel:matProg_barWidth="1dp"
-            wheel:matProg_progressIndeterminate="true"/>
-    </RelativeLayout>
+        android:layout_height="match_parent">
 
 
-    <RelativeLayout
-        android:id="@+id/no_available_tasks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility = "visible"
-        >
-
-        <TextView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/availableTaskRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No tasks currently available. Pull to refresh"
-            android:layout_centerInParent="true"
-            android:padding="16dp"
-            android:gravity="center_horizontal"
-            android:textSize="18sp"/>
+            android:scrollbars="vertical" />
 
-    </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        wheel:matProg_barColor="@color/colorAccent"
+        wheel:matProg_barWidth="1dp"
+        wheel:matProg_progressIndeterminate="true" />
+
+
+    <TextView
+        android:id="@+id/no_available_tasks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="16dp"
+        android:text="No tasks currently available. Pull to refresh"
+        android:textSize="18sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </RelativeLayout>
-  </android.support.v4.widget.SwipeRefreshLayout>
+

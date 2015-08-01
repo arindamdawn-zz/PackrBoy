@@ -65,9 +65,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         Shipment current = shipmentArrayList.get(position);
         holder.requestType.setText(current.getRequestType());
         holder.itemType.setText(current.getItemType());
-        holder.itemQuantity.setText(current.getItemQuantity());
-        holder.requestAddress.setText(current.getStreetNo()+","+current.getRoute()+","+current.getCity()+"-"+current.getPostalCode()+","+current.getState());
-        holder.transitStatus.setText(current.getTransitStatus());
+        holder.itemQuantity.setText("Qty : "+current.getItemQuantity());
+        holder.requestAddress.setText(current.getStreetNo()+","+" "+current.getRoute()+","+" "+current.getCity()+"-"+" "+ current.getPostalCode()+","+" " + current.getState());
+        holder.transitStatus.setText("Status : "+current.getTransitStatus());
+        holder.shipmentId.setText("ID : "+current.getItemId());
+        holder.deliveryType.setText(current.getDeliveryType());
 
         String imageURL = current.getImageURL();
         if(imageURL != null){
@@ -84,6 +86,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         notifyItemRangeChanged(0, shipmentArrayList.size());
     }
 
+    public void removeItem(int position) {
+        shipmentArrayList.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return shipmentArrayList.size();
@@ -91,7 +99,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
 
     class ShipmentHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView requestType,requestAddress,itemType,itemQuantity,customerName,transitStatus;
+        TextView requestType,requestAddress,itemType,itemQuantity,customerName,transitStatus,shipmentId,deliveryType;
 
         public ShipmentHolder(View itemView) {
             super(itemView);
@@ -103,6 +111,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
             itemQuantity = (TextView)itemView.findViewById(R.id.itemQuantity);
             customerName = (TextView)itemView.findViewById(R.id.customerName);
             transitStatus = (TextView)itemView.findViewById(R.id.transitStatus);
+            shipmentId = (TextView)itemView.findViewById(R.id.shipmentId);
+            deliveryType = (TextView)itemView.findViewById(R.id.deliveryType);
             itemView.setOnClickListener(this);
 
         }

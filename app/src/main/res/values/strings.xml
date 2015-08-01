@@ -75,4 +75,8 @@
     <string name="pickup_request_not_allowed">You are not allowed to accept this request.</string>
     <string name="action_profile">My profile</string>
     <string name="notifications">Notifications</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="confirm_logout">Are you sure?</string>
+    <string name="item_image">Item Image</string>
 </resources>

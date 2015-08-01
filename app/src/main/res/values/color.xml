@@ -12,4 +12,8 @@
     <color name="facebook">#3b5998</color>
     <color name="transparentLoaderBackground">#60000000</color>
     <color name="splashBackground">#607d8b</color>
+    <color name="darkGreen">#388E3C</color>
+    <color name="darkOrange">#FF5722</color>
+    <color name="indigo">#536DFE</color>
+    <color name="darkBrown">#5D4037</color>
 </resources>

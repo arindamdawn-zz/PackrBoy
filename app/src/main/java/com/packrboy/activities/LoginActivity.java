@@ -1,9 +1,12 @@
 package com.packrboy.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -36,9 +39,9 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.packrboy.R;
+import com.packrboy.classes.Connectivity;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.network.VolleySingleton;
-import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +62,8 @@ import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE_OBJECT;
 import static com.packrboy.extras.urlEndPoints.KEY_LOGIN;
 import static com.packrboy.extras.urlEndPoints.KEY_TEST_URL;
+import static com.packrboy.extras.urlEndPoints.KEY_TOKEN;
+import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL;
 import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL_API;
 
 public class LoginActivity extends AppCompatActivity {
@@ -72,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     List<String> xxx;
     int size;
     String[] splitCookie, splitSessionId;
-    String userType,firstName,lastName,gender,imageURL,phoneNo,userId,userEmail;
+    String userType, firstName, lastName, gender, imageURL, phoneNo, userId, userEmail;
     SharedPreferenceClass preferenceClass;
     RelativeLayout progressWheel;
 
@@ -89,13 +94,20 @@ public class LoginActivity extends AppCompatActivity {
         toolbar.setTitle("Sign in");
         setSupportActionBar(toolbar);
 
-        if (preferenceClass.getLastUserEmail() != null){
+        if (preferenceClass.getLastUserEmail() != null) {
 
             email.setText(preferenceClass.getLastUserEmail());
             email.setFocusable(false);
             email.setFocusableInTouchMode(true);
 
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -125,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = (TextView) findViewById(R.id.forgotPassword);
         loginLayout = (RelativeLayout) findViewById(R.id.loginLayout);
         preferenceClass = new SharedPreferenceClass(getApplicationContext());
-        progressWheel = (RelativeLayout)findViewById(R.id.progress_wheel);
+        progressWheel = (RelativeLayout) findViewById(R.id.progress_wheel);
     }
 
     public void onClick() {
@@ -133,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validationCheck()) {
-                    Log.e("gfdfdgf","jhghfghfghfghfghf");
+                    Log.e("gfdfdgf", "jhghfghfghfghfghf");
                     sendLoginJsonRequest();
                 }
             }
@@ -173,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-
+                    Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
 
                 } else if (volleyError instanceof AuthFailureError) {
 
@@ -182,6 +194,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     //TODO
                 } else if (volleyError instanceof NetworkError) {
+                    Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
 
                     //TODO
                 } else if (volleyError instanceof ParseError) {
@@ -201,69 +214,68 @@ public class LoginActivity extends AppCompatActivity {
 
     public String getRequestUrl() {
 
-        return "http://192.168.1.11/packr/public/api/csrf";
+        return KEY_UAT_BASE_URL_API + KEY_TOKEN;
     }
 
 
     public void sendLoginJsonRequest() {
-        progressWheel.setVisibility(View.VISIBLE);
-        final JsonObject loginObject = new JsonObject();
-        final JsonObject jsonObject1 = new JsonObject();
-        final JsonObject tokenObject = new JsonObject();
-        try {
-            jsonObject1.addProperty("email", email.getText().toString());
-            jsonObject1.addProperty("password", password.getText().toString());
-            loginObject.add("payload", jsonObject1);
-            loginObject.addProperty("token", preferenceClass.getAccessToken());
+        if (!Connectivity.isConnected(getApplicationContext())) {
+            Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
+        } else {
+            progressWheel.setVisibility(View.VISIBLE);
+            final JsonObject loginObject = new JsonObject();
+            final JsonObject jsonObject1 = new JsonObject();
+            final JsonObject tokenObject = new JsonObject();
+            try {
+                jsonObject1.addProperty("email", email.getText().toString());
+                jsonObject1.addProperty("password", password.getText().toString());
+                loginObject.add("payload", jsonObject1);
+                loginObject.addProperty("token", preferenceClass.getAccessToken());
 
 
-        } catch (JsonIOException e) {
-            e.printStackTrace();
-        }
+            } catch (JsonIOException e) {
+                e.printStackTrace();
+            }
 
-        Ion.with(getApplicationContext())
-                .load(getLoginRequestUrl())
-                .setJsonObjectBody(loginObject)
-                .asJsonObject()
-                .withResponse()
-                .setCallback(new FutureCallback<com.koushikdutta.ion.Response<JsonObject>>() {
-                    @Override
-                    public void onCompleted(Exception e, com.koushikdutta.ion.Response<JsonObject> result) {
-                        progressWheel.setVisibility(View.GONE);
-                        if (result.getResult() != null){
-                           xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
+            Ion.with(getApplicationContext())
+                    .load(getLoginRequestUrl())
+                    .setJsonObjectBody(loginObject)
+                    .asJsonObject()
+                    .withResponse()
+                    .setCallback(new FutureCallback<com.koushikdutta.ion.Response<JsonObject>>() {
+                        @Override
+                        public void onCompleted(Exception e, com.koushikdutta.ion.Response<JsonObject> result) {
+                            progressWheel.setVisibility(View.GONE);
+                            if (result.getResult() != null) {
+                                xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
 //
-                           xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
-                           if (xxx.size() != 0) {
-                               size = xxx.size();
-                               splitCookie = xxx.get(size - 1).split(";");
-                               splitSessionId = splitCookie[0].split("=");
+                                xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
+                                if (xxx.size() != 0) {
+                                    size = xxx.size();
+                                    splitCookie = xxx.get(size - 1).split(";");
+                                    splitSessionId = splitCookie[0].split("=");
 
-                               preferenceClass.saveCookie("laravel_session=" + splitSessionId[1]);
+                                    preferenceClass.saveCookie("laravel_session=" + splitSessionId[1]);
 
-                           }
-                            parseJsonData(result.getResult());
-                       }
-                        else if (e != null){
-                            Log.e("Exception","There is an exception");
-                            hideKeyboard();
-                            Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
+                                }
+                                parseJsonData(result.getResult());
+                            } else if (e != null) {
+                                Log.e("Exception", "There is an exception");
+                                hideKeyboard();
+                                Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Log.e("Exception", "There is a problem");
+                                hideKeyboard();
+                                Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
+                            }
+
+
                         }
-                        else
-                        {
-                            Log.e("Exception","There is a problem");
-                            hideKeyboard();
-                            Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
-                        }
 
 
+                    });
 
-
-                    }
-
-
-                });
-
+        }
     }
 
     public static String getLoginRequestUrl() {
@@ -275,7 +287,7 @@ public class LoginActivity extends AppCompatActivity {
         if (jsonObject == null) {
             return;
         }
-        if (jsonObject.has(KEY_LOGGED_IN_USER)){
+        if (jsonObject.has(KEY_LOGGED_IN_USER)) {
             JsonObject loggedInUserObject = jsonObject.getAsJsonObject(KEY_LOGGED_IN_USER);
             firstName = loggedInUserObject.get(KEY_FIRST_NAME).getAsString();
             preferenceClass.saveFirstName(firstName);
@@ -286,7 +298,7 @@ public class LoginActivity extends AppCompatActivity {
             preferenceClass.saveLastUserEmail(userEmail);
             userType = loggedInUserObject.get(KEY_USER_TYPE).getAsString();
 
-            if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)){
+            if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)) {
                 JsonObject userTypeObject = loggedInUserObject.getAsJsonObject(KEY_USER_TYPE_OBJECT);
                 userId = userTypeObject.get(KEY_ID).getAsString();
                 preferenceClass.saveCustomerId(userId);
@@ -302,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
 
             } else {
-                Log.e("error2","Invalid credentials");
+                Log.e("error2", "Invalid credentials");
                 hideKeyboard();
                 Snackbar.make(loginLayout, "Sorry you do not have an account with us. Go ahead create one and make life easy :)", Snackbar.LENGTH_LONG).show();
             }
@@ -319,8 +331,6 @@ public class LoginActivity extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-
-
 
 
     public void sendTestJsonRequest() {
@@ -344,6 +354,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+                    Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
 
 
                 } else if (volleyError instanceof AuthFailureError) {

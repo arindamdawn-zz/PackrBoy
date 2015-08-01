@@ -30,5 +30,4 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.pnikosis:materialish-progress:1.5'
-    compile 'com.avast:android-styled-dialogs:2.2.0'
 }

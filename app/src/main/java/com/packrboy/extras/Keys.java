@@ -58,5 +58,7 @@ public interface Keys {
         public static String KEY_PICKUP_POSTAL_CODE = "pickup_postal_code";
         public static String KEY_ITEM_QUANTITY = "item_qty";
         public static String KEY_CREATED_AT = "created_at";
+        public static String KEY_DELIVERY_TYPE_ID = "delivery_type_id";
+        public static String KEY_ITEM_TYPE_ID = "item_type_id";
     }
 }
