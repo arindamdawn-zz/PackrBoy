@@ -12,6 +12,8 @@ import android.widget.Button;
 import com.packrboy.R;
 import com.packrboy.classes.SharedPreferenceClass;
 
+import eu.inloop.easygcm.GcmHelper;
+
 public class LauncherActivity extends AppCompatActivity {
 
     private static int SPLASH_TIME_OUT = 3000 ;
@@ -21,8 +23,10 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+        GcmHelper.init(this);
         initialize();
         onClick();
+
 
         new Handler().postDelayed(new Runnable() {
 

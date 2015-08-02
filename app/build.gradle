@@ -30,4 +30,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.pnikosis:materialish-progress:1.5'
+    compile 'eu.inloop:easygcm:1.5.0@aar'
+    apply plugin: 'com.google.gms.google-services'
 }

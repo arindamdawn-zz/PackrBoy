@@ -332,7 +332,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
                             alert.setTitle("Request cannot be accepted");
                             alert.setMessage(R.string.pickup_request_not_allowed);
                             alert.show();
-                            mTaskAdapter.removeItem(rowPosition);
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
