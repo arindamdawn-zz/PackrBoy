@@ -28,18 +28,15 @@ public class SharedPreferenceClass {
         return sharedprefs.getString("deviceToken","");
     }
 
-    public void saveCartItem(Integer cartItem){
-        prefsEditor.putInt("cartItem", cartItem);
+    public void saveProfileImageUrl(String profileImageUrl){
+        prefsEditor.putString("profileImageUrl", profileImageUrl);
         prefsEditor.commit();
     }
 
-    public Integer getCartItem(){
-        return sharedprefs.getInt("cartItem",0);
+    public String getProfileImageUrl(){
+        return sharedprefs.getString("profileImageUrl","");
     }
-    public void clearCartItem(){
-        prefsEditor.remove("cartItem");
-        prefsEditor.commit();
-    }
+
 
     public void saveCustomerId(String customerId){
         prefsEditor.putString("customerId", customerId);
@@ -82,6 +79,15 @@ public class SharedPreferenceClass {
 
     public String getUserEmail() {
         return sharedprefs.getString("user_email", "");
+    }
+
+    public void saveUserPhoneNo(String user_phone_no) {
+        prefsEditor.putString("user_phone_no", user_phone_no);
+        prefsEditor.commit();
+    }
+
+    public String getUserPhoneNo() {
+        return sharedprefs.getString("user_phone_no", "");
     }
 
     public void clearFirstName(){

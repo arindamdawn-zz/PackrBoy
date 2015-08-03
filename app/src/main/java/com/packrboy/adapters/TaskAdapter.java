@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -67,7 +69,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         holder.itemType.setText(current.getItemType());
         holder.itemQuantity.setText("Qty : "+current.getItemQuantity());
         holder.requestAddress.setText(current.getStreetNo()+","+" "+current.getRoute()+","+" "+current.getCity()+"-"+" "+ current.getPostalCode()+","+" " + current.getState());
-        holder.transitStatus.setText("Status : "+current.getTransitStatus());
+        holder.transitStatus.setText(current.getTransitStatus());
         holder.shipmentId.setText("ID : "+current.getItemId());
         holder.deliveryType.setText(current.getDeliveryType());
 
@@ -104,6 +106,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
         public ShipmentHolder(View itemView) {
             super(itemView);
 
+
             itemImage = (ImageView)itemView.findViewById(R.id.itemImage);
             requestType = (TextView)itemView.findViewById(R.id.requestType);
             requestAddress = (TextView)itemView.findViewById(R.id.address);
@@ -113,6 +116,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ShipmentHolder
             transitStatus = (TextView)itemView.findViewById(R.id.transitStatus);
             shipmentId = (TextView)itemView.findViewById(R.id.shipmentId);
             deliveryType = (TextView)itemView.findViewById(R.id.deliveryType);
+
+
+            Animation anim = new AlphaAnimation(0.0f, 1.0f);
+            anim.setDuration(1000); //You can manage the blinking time with this parameter
+            anim.setStartOffset(0);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            transitStatus.startAnimation(anim);
+
             itemView.setOnClickListener(this);
 
         }

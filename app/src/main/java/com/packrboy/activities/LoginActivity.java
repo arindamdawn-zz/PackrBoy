@@ -3,6 +3,7 @@ package com.packrboy.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +40,10 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.packrboy.BuildConfig;
 import com.packrboy.R;
 import com.packrboy.classes.Connectivity;
+import com.packrboy.classes.DeviceInfo;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.network.VolleySingleton;
 
@@ -50,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Inflater;
 
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_EMAIL;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_FIRST_NAME;
@@ -58,6 +63,8 @@ import static com.packrboy.extras.Keys.ServiceKeys.KEY_ID;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_LAST_NAME;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_LOGGED_IN_USER;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_LOGIN_STATUS;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_PHONE_NO;
+import static com.packrboy.extras.Keys.ServiceKeys.KEY_PROFILE_PIC;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_USER_TYPE_OBJECT;
 import static com.packrboy.extras.urlEndPoints.KEY_LOGIN;
@@ -76,10 +83,12 @@ public class LoginActivity extends AppCompatActivity {
     Toolbar toolbar;
     List<String> xxx;
     int size;
+    LayoutInflater inflater;
     String[] splitCookie, splitSessionId;
     String userType, firstName, lastName, gender, imageURL, phoneNo, userId, userEmail;
     SharedPreferenceClass preferenceClass;
     RelativeLayout progressWheel;
+    DeviceInfo deviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +114,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
+    public void onResume(){
         super.onResume();
-
     }
 
     @Override
@@ -138,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         loginLayout = (RelativeLayout) findViewById(R.id.loginLayout);
         preferenceClass = new SharedPreferenceClass(getApplicationContext());
         progressWheel = (RelativeLayout) findViewById(R.id.progress_wheel);
+        deviceInfo = new DeviceInfo();
     }
 
     public void onClick() {
@@ -145,7 +154,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validationCheck()) {
-                    Log.e("gfdfdgf", "jhghfghfghfghfghf");
                     sendLoginJsonRequest();
                 }
             }
@@ -154,7 +162,11 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendTestJsonRequest();
+                AlertDialog.Builder alert= new AlertDialog.Builder(LoginActivity.this);
+                alert.setTitle("Provide your email");
+                alert.setMessage("A password reset link will be sent to your email id");
+                alert.setView(R.layout.forgot_password);
+                alert.show();
             }
         });
     }
@@ -225,13 +237,22 @@ public class LoginActivity extends AppCompatActivity {
             progressWheel.setVisibility(View.VISIBLE);
             final JsonObject loginObject = new JsonObject();
             final JsonObject jsonObject1 = new JsonObject();
-            final JsonObject tokenObject = new JsonObject();
+            final JsonObject deviceObject = new JsonObject();
             try {
                 jsonObject1.addProperty("email", email.getText().toString());
                 jsonObject1.addProperty("password", password.getText().toString());
                 loginObject.add("payload", jsonObject1);
                 loginObject.addProperty("token", preferenceClass.getAccessToken());
-
+                deviceObject.addProperty("device_name",deviceInfo.getDeviceName());
+                deviceObject.addProperty("device_type","ANDROID");
+                deviceObject.addProperty("device_os_ver", deviceInfo.getDeviceOSVersion());
+                deviceObject.addProperty("device_resolution", getResources().getDisplayMetrics().widthPixels + "*" + getResources().getDisplayMetrics().heightPixels );
+                deviceObject.addProperty("device_token", preferenceClass.getDeviceToken());
+                deviceObject.addProperty("app_ver", BuildConfig.VERSION_NAME);
+                deviceObject.addProperty("lon", "");
+                deviceObject.addProperty("lat", "");
+                deviceObject.addProperty("user_id", "");
+                jsonObject1.add("device",deviceObject);
 
             } catch (JsonIOException e) {
                 e.printStackTrace();
@@ -296,7 +317,16 @@ public class LoginActivity extends AppCompatActivity {
             gender = loggedInUserObject.get(KEY_GENDER).getAsString();
             userEmail = loggedInUserObject.get(KEY_EMAIL).getAsString();
             preferenceClass.saveLastUserEmail(userEmail);
+            preferenceClass.saveUserEmail(userEmail);
+            phoneNo = loggedInUserObject.get(KEY_PHONE_NO).getAsString();
+            preferenceClass.saveUserPhoneNo(phoneNo);
             userType = loggedInUserObject.get(KEY_USER_TYPE).getAsString();
+            if (loggedInUserObject.get(KEY_PROFILE_PIC).getAsString() != null){
+            imageURL = loggedInUserObject.get(KEY_PROFILE_PIC).getAsString();}
+
+            preferenceClass.saveProfileImageUrl(KEY_UAT_BASE_URL + imageURL);
+
+
 
             if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)) {
                 JsonObject userTypeObject = loggedInUserObject.getAsJsonObject(KEY_USER_TYPE_OBJECT);
@@ -304,7 +334,6 @@ public class LoginActivity extends AppCompatActivity {
                 preferenceClass.saveCustomerId(userId);
 
             }
-
 
         }
         if (jsonObject.has(KEY_LOGIN_STATUS)) {

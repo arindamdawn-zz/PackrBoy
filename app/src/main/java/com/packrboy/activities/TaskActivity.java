@@ -32,6 +32,7 @@ public class TaskActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Hello"+ " "+ preferenceClass.getFirstName()+"!");
         setSupportActionBar(toolbar);
+        toolbar.setLogo(R.drawable.app_icon_small);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         setupViewPager(viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -63,6 +64,15 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume(){
+        if (!(preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0)){
+            Intent i = new Intent(TaskActivity.this, LoginActivity.class);
+            startActivity(i);
+        }
+        super.onResume();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -91,6 +101,9 @@ public class TaskActivity extends AppCompatActivity {
             alert.show();
         } else if (id == R.id.action_settings){
             Intent intent = new Intent(TaskActivity.this,SettingsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_profile){
+            Intent intent = new Intent(TaskActivity.this,ProfileActivity.class);
             startActivity(intent);
         }
 

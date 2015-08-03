@@ -241,8 +241,6 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
                             itemType = "Goods";
                         }
 
-
-
                         Shipment current = new Shipment();
                         current.setImageURL(imageURL);
                         current.setCity(city);
@@ -324,7 +322,6 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
                             alert.setTitle("Request cannot be accepted");
                             alert.setMessage(R.string.pickup_request_not_allowed);
                             alert.show();
-                            mTaskAdapter.removeItem(rowPosition);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

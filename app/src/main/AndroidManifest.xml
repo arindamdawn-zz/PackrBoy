@@ -17,13 +17,11 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-
     <permission
         android:name="com.packrboy.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.paaltao.permission.C2D_MESSAGE" />
-
 
     <application
         android:name=".classes.PackrBoy"
@@ -46,22 +44,32 @@
         </activity>
         <activity
             android:name=".activities.TaskActivity"
-            android:label="@string/title_activity_task"
-            >
+            android:label="@string/title_activity_task" >
         </activity>
         <activity
             android:name=".activities.NotificationActivity"
             android:label="@string/title_activity_notification"
-            android:parentActivityName=".activities.SettingsActivity">
-
+            android:parentActivityName=".activities.SettingsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SettingsActivity"/>
+                android:value=".activities.SettingsActivity" />
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:windowSoftInputMode="stateVisible|adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.packrboy.activities.TaskActivity" />
+        </activity>
+
+        <service
+            android:name=".services.CheckAvailableTask"
+            android:exported="false" />
     </application>
 
 </manifest>

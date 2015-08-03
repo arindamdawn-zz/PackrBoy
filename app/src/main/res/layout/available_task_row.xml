@@ -213,8 +213,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="6dp"
-            android:textStyle="bold"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="7/23, Poddar Nagar, Near South city mall, Kolkata - 700068 WB"/>
 
 

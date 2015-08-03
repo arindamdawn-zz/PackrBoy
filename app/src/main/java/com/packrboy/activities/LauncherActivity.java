@@ -39,7 +39,7 @@ public class LauncherActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0){
+                if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0 && preferenceClass.getCustomerId() != null && preferenceClass.getCustomerId().length() != 0){
                 Intent i = new Intent(LauncherActivity.this, TaskActivity.class);
                 startActivity(i);}
 
@@ -54,6 +54,12 @@ public class LauncherActivity extends AppCompatActivity {
         }, SPLASH_TIME_OUT);
 
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
