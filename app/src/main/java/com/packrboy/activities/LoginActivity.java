@@ -97,8 +97,6 @@ public class LoginActivity extends AppCompatActivity {
         initialize();
         onClick();
 
-        sendTokenRequest();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Sign in");
         setSupportActionBar(toolbar);
@@ -114,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -154,7 +152,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validationCheck()) {
-                    sendLoginJsonRequest();
+                    sendTokenRequest();
+                    if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0) {
+                        sendLoginJsonRequest();
+                    }
                 }
             }
         });
@@ -162,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert= new AlertDialog.Builder(LoginActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
                 alert.setTitle("Provide your email");
                 alert.setMessage("A password reset link will be sent to your email id");
                 alert.setView(R.layout.forgot_password);
@@ -243,16 +244,16 @@ public class LoginActivity extends AppCompatActivity {
                 jsonObject1.addProperty("password", password.getText().toString());
                 loginObject.add("payload", jsonObject1);
                 loginObject.addProperty("token", preferenceClass.getAccessToken());
-                deviceObject.addProperty("device_name",deviceInfo.getDeviceName());
-                deviceObject.addProperty("device_type","ANDROID");
+                deviceObject.addProperty("device_name", deviceInfo.getDeviceName());
+                deviceObject.addProperty("device_type", "ANDROID");
                 deviceObject.addProperty("device_os_ver", deviceInfo.getDeviceOSVersion());
-                deviceObject.addProperty("device_resolution", getResources().getDisplayMetrics().widthPixels + "*" + getResources().getDisplayMetrics().heightPixels );
+                deviceObject.addProperty("device_resolution", getResources().getDisplayMetrics().widthPixels + "*" + getResources().getDisplayMetrics().heightPixels);
                 deviceObject.addProperty("device_token", preferenceClass.getDeviceToken());
                 deviceObject.addProperty("app_ver", BuildConfig.VERSION_NAME);
                 deviceObject.addProperty("lon", "");
                 deviceObject.addProperty("lat", "");
                 deviceObject.addProperty("user_id", "");
-                jsonObject1.add("device",deviceObject);
+                jsonObject1.add("device", deviceObject);
 
             } catch (JsonIOException e) {
                 e.printStackTrace();
@@ -267,7 +268,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onCompleted(Exception e, com.koushikdutta.ion.Response<JsonObject> result) {
                             progressWheel.setVisibility(View.GONE);
-                            if (result.getResult() != null) {
+                            if (e != null) {
+                                Log.e("exception", e.getLocalizedMessage() + " " + e.getLocalizedMessage());
+                                hideKeyboard();
+                                Snackbar.make(loginLayout, "We are facing problems in connecting to our servers. Just chill and try after some time :)", Snackbar.LENGTH_LONG).show();
+                            } else if (result != null) {
                                 xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
 //
                                 xxx = result.getHeaders().getHeaders().getAll("Set-Cookie");
@@ -280,10 +285,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                 }
                                 parseJsonData(result.getResult());
-                            } else if (e != null) {
-                                Log.e("Exception", "There is an exception");
-                                hideKeyboard();
-                                Snackbar.make(loginLayout, "Something is wrong with the internet connection", Snackbar.LENGTH_LONG).show();
                             } else {
                                 Log.e("Exception", "There is a problem");
                                 hideKeyboard();
@@ -321,11 +322,11 @@ public class LoginActivity extends AppCompatActivity {
             phoneNo = loggedInUserObject.get(KEY_PHONE_NO).getAsString();
             preferenceClass.saveUserPhoneNo(phoneNo);
             userType = loggedInUserObject.get(KEY_USER_TYPE).getAsString();
-            if (loggedInUserObject.get(KEY_PROFILE_PIC).getAsString() != null){
-            imageURL = loggedInUserObject.get(KEY_PROFILE_PIC).getAsString();}
+            if (loggedInUserObject.get(KEY_PROFILE_PIC).getAsString() != null) {
+                imageURL = loggedInUserObject.get(KEY_PROFILE_PIC).getAsString();
+            }
 
             preferenceClass.saveProfileImageUrl(KEY_UAT_BASE_URL + imageURL);
-
 
 
             if (loggedInUserObject.has(KEY_USER_TYPE_OBJECT)) {
