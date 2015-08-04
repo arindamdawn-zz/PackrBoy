@@ -78,6 +78,7 @@ import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL_API;
  * Created by arindam.paaltao on 27-Jul-15.
  */
 public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickListener {
+    private static final String STATE_TASKS = "state_tasks";
     private RecyclerView mRecyclerView;
     private TaskAdapter mTaskAdapter;
     private JSONArray shipmentListArray;
@@ -106,13 +107,18 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
         userId = preferenceClass.getCustomerId();
         progressWheel = (ProgressWheel) layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView) layout.findViewById(R.id.no_available_tasks);
-        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.PENDING_TASKS);
+        if (savedInstanceState != null) {
+            //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
+            shipmentArrayList = savedInstanceState.getParcelableArrayList(STATE_TASKS);
+        }else {
 
-        if (shipmentArrayList.isEmpty()) {
-            L.m("Executing task from fragment");
-            sendJsonRequest();
+            shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.PENDING_TASKS);
+
+            if (shipmentArrayList.isEmpty()) {
+                L.m("Executing task from fragment");
+                sendJsonRequest();
+            }
         }
-
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.pendingTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -133,6 +139,16 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
 
         return layout;
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save the movie list to a parcelable prior to rotation or configuration change
+        outState.putParcelableArrayList(STATE_TASKS, shipmentArrayList);
+
+    }
+
 
     public static boolean canScrollVerticallyAnyFurther(View view, boolean downwardScroll) {
         return view.canScrollVertically(downwardScroll ? +1 : -1);

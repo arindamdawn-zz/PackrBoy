@@ -103,13 +103,18 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         progressWheel = (ProgressWheel)layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView)layout.findViewById(R.id.no_available_tasks);
 
-        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.AVAILABLE_TASKS);
+        if (savedInstanceState != null) {
+            //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
+            shipmentArrayList = savedInstanceState.getParcelableArrayList(STATE_TASKS);
+        }else {
 
-        if (shipmentArrayList.isEmpty()) {
-            L.m("Executing task from fragment");
-            sendJsonRequest();
+            shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.AVAILABLE_TASKS);
+
+            if (shipmentArrayList.isEmpty()) {
+                L.m("Executing task from fragment");
+                sendJsonRequest();
+            }
         }
-
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.availableTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -133,6 +138,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //save the movie list to a parcelable prior to rotation or configuration change
+        outState.putParcelableArrayList(STATE_TASKS, shipmentArrayList);
 
     }
 

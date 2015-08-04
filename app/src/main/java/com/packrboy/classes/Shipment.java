@@ -1,9 +1,14 @@
 package com.packrboy.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.packrboy.logging.L;
+
 /**
  * Created by arindam.paaltao on 29-Jul-15.
  */
-public class Shipment {
+public class Shipment implements Parcelable{
     int itemId;
 
     public int getItemId() {
@@ -192,4 +197,15 @@ public class Shipment {
     String imageURL;
     Double latitude,longitude;
     Float itemValue,itemPrice;
+
+    @Override
+    public int describeContents() {
+        L.m("Describe contents shipments");
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        L.m("Write to parcel shipment");
+    }
 }

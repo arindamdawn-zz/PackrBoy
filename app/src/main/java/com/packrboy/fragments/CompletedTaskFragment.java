@@ -69,6 +69,7 @@ import static com.packrboy.extras.urlEndPoints.KEY_UAT_BASE_URL_API;
  * Created by arindam.paaltao on 27-Jul-15.
  */
 public class CompletedTaskFragment extends Fragment {
+    private static final String STATE_TASKS = "state_tasks";
     private RecyclerView mRecyclerView;
     private TaskAdapter mTaskAdapter;
     private JSONArray shipmentListArray;
@@ -94,13 +95,18 @@ public class CompletedTaskFragment extends Fragment {
         progressWheel = (ProgressWheel)layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView)layout.findViewById(R.id.no_available_tasks);
 
-        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.COMPLETED_TASKS);
+        if (savedInstanceState != null) {
+            //if this fragment starts after a rotation or configuration change, load the existing movies from a parcelable
+            shipmentArrayList = savedInstanceState.getParcelableArrayList(STATE_TASKS);
+        }else {
 
-        if (shipmentArrayList.isEmpty()) {
-            L.m("Executing task from fragment");
-            sendJsonRequest();
+            shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.COMPLETED_TASKS);
+
+            if (shipmentArrayList.isEmpty()) {
+                L.m("Executing task from fragment");
+                sendJsonRequest();
+            }
         }
-
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.completedTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -116,6 +122,15 @@ public class CompletedTaskFragment extends Fragment {
 
         return layout;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save the movie list to a parcelable prior to rotation or configuration change
+        outState.putParcelableArrayList(STATE_TASKS, shipmentArrayList);
+
+    }
+
 
     public static String getRequestUrl(){
         return KEY_UAT_BASE_URL_API + KEY_SHIPMENT_URL + KEY_DONE;
