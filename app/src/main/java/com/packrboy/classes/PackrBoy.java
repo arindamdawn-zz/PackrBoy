@@ -17,6 +17,7 @@ import android.util.Log;
 import com.packrboy.R;
 import com.packrboy.activities.LauncherActivity;
 import com.packrboy.activities.NotificationActivity;
+import com.packrboy.database.DBTasks;
 
 import eu.inloop.easygcm.GcmListener;
 
@@ -29,14 +30,15 @@ public class PackrBoy extends Application implements GcmListener {
     private static final String TAG = "Packrmate";
     private SharedPreferenceClass preferenceClass;
     String pushMessage;
+    private static DBTasks mDatabase;
     int counter;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sInstance = this;
-        preferenceClass = new SharedPreferenceClass(getAppContext());
 
+    public synchronized static DBTasks getWritableDatabase() {
+        if (mDatabase == null) {
+            mDatabase = new DBTasks(getAppContext());
+        }
+        return mDatabase;
     }
 
     public static PackrBoy getInstance() {
@@ -47,6 +49,14 @@ public class PackrBoy extends Application implements GcmListener {
         return sInstance.getApplicationContext();
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sInstance = this;
+        preferenceClass = new SharedPreferenceClass(getAppContext());
+        mDatabase = new DBTasks(this);
+
+    }
 
     @Override
     public void onMessage(String s, Bundle bundle) {

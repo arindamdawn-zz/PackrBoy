@@ -30,8 +30,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.packrboy.R;
 import com.packrboy.activities.TaskActivity;
 import com.packrboy.adapters.TaskAdapter;
+import com.packrboy.classes.PackrBoy;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.classes.Shipment;
+import com.packrboy.database.DBTasks;
+import com.packrboy.logging.L;
 import com.packrboy.network.VolleySingleton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
@@ -103,7 +106,13 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
         userId = preferenceClass.getCustomerId();
         progressWheel = (ProgressWheel) layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView) layout.findViewById(R.id.no_available_tasks);
-        sendJsonRequest();
+        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.PENDING_TASKS);
+
+        if (shipmentArrayList.isEmpty()) {
+            L.m("Executing task from fragment");
+            sendJsonRequest();
+        }
+
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.pendingTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -111,7 +120,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
         pendingTaskLayout = (RelativeLayout)layout.findViewById(R.id.pendingTaskLayout);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-        canScrollVerticallyAnyFurther(mRecyclerView, true);
+        mTaskAdapter.setShipmentArrayList(shipmentArrayList);
 
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -285,6 +294,7 @@ public class PendingTaskFragment extends Fragment implements TaskAdapter.ClickLi
             }
 
         }
+        PackrBoy.getWritableDatabase().insertTasks(DBTasks.PENDING_TASKS, shipmentArrayList, true);
         return shipmentArrayList;
     }
 

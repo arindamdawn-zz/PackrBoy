@@ -29,8 +29,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.packrboy.R;
 import com.packrboy.activities.TaskActivity;
 import com.packrboy.adapters.TaskAdapter;
+import com.packrboy.classes.PackrBoy;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.classes.Shipment;
+import com.packrboy.database.DBTasks;
+import com.packrboy.logging.L;
 import com.packrboy.network.VolleySingleton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
@@ -84,6 +87,8 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     TextView noAvailableTasks,requestTypeText;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private static final String STATE_TASKS = "state_tasks";
+
 
     public AvailableTaskFragment() {
 
@@ -97,15 +102,21 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         userId = preferenceClass.getCustomerId();
         progressWheel = (ProgressWheel)layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView)layout.findViewById(R.id.no_available_tasks);
-        sendJsonRequest();
+
+        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.AVAILABLE_TASKS);
+
+        if (shipmentArrayList.isEmpty()) {
+            L.m("Executing task from fragment");
+            sendJsonRequest();
+        }
+
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.availableTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
         mTaskAdapter.setClickListener(this);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-
-        canScrollVerticallyAnyFurther(mRecyclerView,true);
+        mTaskAdapter.setShipmentArrayList(shipmentArrayList);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -118,9 +129,18 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
         return layout;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save the movie list to a parcelable prior to rotation or configuration change
+
+    }
+
+
     public static String getRequestUrl(){
         return KEY_UAT_BASE_URL_API + KEY_SHIPMENT_URL + KEY_AVAILABLE;
     }
+
 
     public void sendJsonRequest(){
         progressWheel.setVisibility(View.VISIBLE);
@@ -268,6 +288,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
             }
 
         }
+        PackrBoy.getWritableDatabase().insertTasks(DBTasks.AVAILABLE_TASKS, shipmentArrayList, true);
         return shipmentArrayList;
     }
 

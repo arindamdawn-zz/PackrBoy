@@ -27,8 +27,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.packrboy.R;
 import com.packrboy.activities.TaskActivity;
 import com.packrboy.adapters.TaskAdapter;
+import com.packrboy.classes.PackrBoy;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.classes.Shipment;
+import com.packrboy.database.DBTasks;
+import com.packrboy.logging.L;
 import com.packrboy.network.VolleySingleton;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
@@ -90,11 +93,20 @@ public class CompletedTaskFragment extends Fragment {
         preferenceClass = new SharedPreferenceClass(getActivity());
         progressWheel = (ProgressWheel)layout.findViewById(R.id.progress_wheel);
         noAvailableTasks = (TextView)layout.findViewById(R.id.no_available_tasks);
-        sendJsonRequest();
+
+        shipmentArrayList = PackrBoy.getWritableDatabase().readShipments(DBTasks.COMPLETED_TASKS);
+
+        if (shipmentArrayList.isEmpty()) {
+            L.m("Executing task from fragment");
+            sendJsonRequest();
+        }
+
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.completedTaskRecyclerView);
         mTaskAdapter = new TaskAdapter(getActivity(), activity);
         mRecyclerView.setAdapter(mTaskAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTaskAdapter.setShipmentArrayList(shipmentArrayList);
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -263,7 +275,7 @@ public class CompletedTaskFragment extends Fragment {
             }
 
         }
-
+        PackrBoy.getWritableDatabase().insertTasks(DBTasks.COMPLETED_TASKS, shipmentArrayList, true);
         return shipmentArrayList;
     }
 

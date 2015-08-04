@@ -201,15 +201,13 @@ public class LoginActivity extends AppCompatActivity {
                     Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
 
                 } else if (volleyError instanceof AuthFailureError) {
-
                     //TODO
                 } else if (volleyError instanceof ServerError) {
-
-                    //TODO
+                    hideKeyboard();
+                    Snackbar.make(loginLayout, "We are facing problems in connecting to our servers. Just chill and try after some time :)", Snackbar.LENGTH_LONG).show();
                 } else if (volleyError instanceof NetworkError) {
                     Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
 
-                    //TODO
                 } else if (volleyError instanceof ParseError) {
 
                     //TODO

@@ -90,6 +90,12 @@ public class TaskActivity extends AppCompatActivity {
             alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(TaskActivity.this,LauncherActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    preferenceClass.clearAccessToken();
+
                 }
             });
             alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {

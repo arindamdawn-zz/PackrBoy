@@ -28,6 +28,15 @@ public class SharedPreferenceClass {
         return sharedprefs.getString("deviceToken","");
     }
 
+    public void saveWebServiceFlag(Boolean webServiceFlag){
+        prefsEditor.putBoolean("webService_flag", webServiceFlag);
+        prefsEditor.commit();
+    }
+
+    public Boolean getWebServiceFlag() {
+        return sharedprefs.getBoolean("webService_flag", false);
+    }
+
     public void saveProfileImageUrl(String profileImageUrl){
         prefsEditor.putString("profileImageUrl", profileImageUrl);
         prefsEditor.commit();
@@ -45,6 +54,12 @@ public class SharedPreferenceClass {
     public String getCustomerId(){
         return sharedprefs.getString("customerId","");
     }
+
+    public void clearCustomerId(){
+        prefsEditor.remove("customerId");
+        prefsEditor.commit();
+    }
+
     public void saveCookie(String cookieValue){
         prefsEditor.putString("sessionid",cookieValue);
         prefsEditor.commit();
