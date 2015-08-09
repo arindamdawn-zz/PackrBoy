@@ -152,10 +152,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validationCheck()) {
+                    hideKeyboard();
                     sendTokenRequest();
-                    if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0) {
-                        sendLoginJsonRequest();
-                    }
+
                 }
             }
         });
@@ -187,12 +186,17 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void sendTokenRequest() {
+        progressWheel.setVisibility(View.VISIBLE);
         RequestQueue requestQueue = VolleySingleton.getsInstance().getRequestQueue();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, getRequestUrl(), new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                progressWheel.setVisibility(View.GONE);
                 Log.e("Value", s);
                 preferenceClass.saveAccessToken(s);
+                if (preferenceClass.getAccessToken() != null && preferenceClass.getAccessToken().length() != 0) {
+                    sendLoginJsonRequest();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

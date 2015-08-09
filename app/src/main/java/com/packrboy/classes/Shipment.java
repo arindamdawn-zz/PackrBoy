@@ -11,6 +11,43 @@ import com.packrboy.logging.L;
 public class Shipment implements Parcelable{
     int itemId;
 
+    protected Shipment(Parcel in) {
+        itemId = in.readInt();
+        itemTypeId = in.readInt();
+        itemType = in.readString();
+        itemQuantity = in.readString();
+        requestType = in.readString();
+        deliveryType = in.readString();
+        transitStatus = in.readString();
+        postalCode = in.readString();
+        streetNo = in.readString();
+        route = in.readString();
+        city = in.readString();
+        state = in.readString();
+        country = in.readString();
+        itemDescription = in.readString();
+        createdTime = in.readString();
+        updatedTime = in.readString();
+        imageURL = in.readString();
+    }
+
+    public static final Parcelable.Creator<Shipment> CREATOR = new Parcelable.Creator<Shipment>() {
+        @Override
+        public Shipment createFromParcel(Parcel in) {
+            return new Shipment(in);
+        }
+
+        @Override
+        public Shipment[] newArray(int size) {
+            return new Shipment[size];
+        }
+    };
+
+    public Shipment(){
+
+    }
+
+
     public int getItemId() {
         return itemId;
     }
