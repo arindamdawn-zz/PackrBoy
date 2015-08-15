@@ -47,14 +47,8 @@ import com.packrboy.classes.DeviceInfo;
 import com.packrboy.classes.SharedPreferenceClass;
 import com.packrboy.network.VolleySingleton;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.Inflater;
+
 
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_EMAIL;
 import static com.packrboy.extras.Keys.ServiceKeys.KEY_FIRST_NAME;
@@ -362,72 +356,6 @@ public class LoginActivity extends AppCompatActivity {
             InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-
-    public void sendTestJsonRequest() {
-        final JSONObject testObject = new JSONObject();
-        try {
-            testObject.put("token", preferenceClass.getAccessToken());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        RequestQueue requestQueue = VolleySingleton.getsInstance().getRequestQueue();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getTestRequestUrl(), testObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                Log.i("error", jsonObject.toString());
-                Log.i("login", testObject.toString());
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-                    Snackbar.make(loginLayout, "Something is wrong with your internet connection. Please check your settings", Snackbar.LENGTH_LONG).show();
-
-
-                } else if (volleyError instanceof AuthFailureError) {
-
-                    //TODO
-                } else if (volleyError instanceof ServerError) {
-
-                    //TODO
-                } else if (volleyError instanceof NetworkError) {
-
-                    //TODO
-                } else if (volleyError instanceof ParseError) {
-
-                    //TODO
-                }
-
-            }
-        }) {
-            @Override
-            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                return super.parseNetworkResponse(response);
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = super.getHeaders();
-
-                if (headers == null
-                        || headers.equals(Collections.emptyMap())) {
-                    headers = new HashMap<String, String>();
-                }
-
-                headers.put("Cookie", preferenceClass.getCookie());
-                return headers;
-            }
-        };
-        requestQueue.add(jsonObjectRequest);
-    }
-
-    public static String getTestRequestUrl() {
-        return KEY_UAT_BASE_URL_API + KEY_TEST_URL;
     }
 
 

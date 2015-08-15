@@ -12,12 +12,10 @@ import com.packrboy.logging.L;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 /**
  * Created by arindam.paaltao on 04-Aug-15.
  */
 public class DBTasks {
-
     public static final int AVAILABLE_TASKS = 0;
     public static final int PENDING_TASKS = 1;
     public static final int COMPLETED_TASKS = 2;
@@ -33,7 +31,6 @@ public class DBTasks {
         if (clearPrevious) {
             deleteTasks(table);
         }
-
 
         //create a sql prepared statement
         String sql = "INSERT INTO " + ((table == AVAILABLE_TASKS) ? TasksHelper.TABLE_AVAILABLE_TASKS :(table == PENDING_TASKS) ? TasksHelper.TABLE_PENDING_TASKS : TasksHelper.TABLE_COMPLETED_TASKS) + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";

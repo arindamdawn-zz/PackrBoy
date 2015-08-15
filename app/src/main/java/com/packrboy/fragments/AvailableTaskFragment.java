@@ -84,7 +84,7 @@ public class AvailableTaskFragment extends Fragment implements TaskAdapter.Click
     String userId,deliveryType,itemType,transitStatus,requestType,streetNo,route,city,state,postalCode,imageURL,customerName,latitude,longitude,createdTime,updatedTime,itemQuantity;
     View layout;
     ProgressWheel progressWheel;
-    TextView noAvailableTasks,requestTypeText;
+    TextView noAvailableTasks;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private static final String STATE_TASKS = "state_tasks";
